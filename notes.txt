@@ -1,0 +1,68 @@
+Lab 2 Notes - TCP Sockets
+
+Imagine you want to connect your PC to Google Server (another PC).
+
+Client -> Google PC
+"ask for stuff" -> "i am a server because i give you stuff"
+
+Typically, you'd use a web browser. However, we want to do it ourselves. This is where sockets come into play.
+
+Sockets can be thought of an endpoint at each end of the connection between you (client) and Google.
+At each end of the connection:
+
+Client                 -->   Google (Server)
+Socket [IP, Port]            Socket [IP, Port]
+
+PROCESS OF SOCKETS (client parts in client.py)
+1. Client initializes socket
+2. Google binds to IP, port; and starts listening to their port
+3. Client wants to connect to Google [Server-IP, Server-Port]
+4. Google accepts this connection
+5. Google waits for request
+6. Client makes request [give me google homepage]
+7. Google sends google homepage
+8. Client receives google homepage
+9. Client shuts down socket after finished sending request
+
+CREATING SERVER (echo_server.py)
+1. Server defines host and port
+2. Start single threaded server
+    a. Initialize server socket
+    b. Server socket bind to IP and port
+    c. Listen for incoming connections
+    d. When we get client connection, we accept it
+        i. `conn` = client socket
+        ii. `addr` = 
+        iii. `` = 
+    e. Send response (e.g. google homepage)
+
+
+pt 4: client
+pt 5: server
+
+PROXIES
+May use proxy to connect to university printers or bypass internet restrictions (work, school, government).
+Proxy is a middleman PC between the client and server, acting as a [Server to your PC] AND [Client to Google server].
+
+Client sends request to proxy, who sends request to server. Server sends response to proxy, proxy sends response to client.
+Client ↔ Proxy ↔ Server
+
+Forking = accept multiple requests (clients) at once
+
+Explanation of usage of `AF_INET`, `SOCK_STREAM`
+TCP = reliable as when you make a request, it retries sending request in failure
+UDP = it does not resend requests but faster (use `SOCK_DGRAM`)
+`AF_INET` = use IPv4
+`SOCK_STREAM` = use TCP
+Good practice to close socket yourself `s.close()`
+
+In echo_server.py, we do not use `s.close()` as the function uses a `with` keyword: `with socket.socket(...) as s:`
+
+`s.setsockopt()`
+
+1. sock_dgram
+2. 
+3. `s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)` 
+`setsockopt` and `SO_REUSEADDR`     allows you to reuse the same bind port [useful in constant debugging as laptop won't open and close ports in time]
+4. 
+5. Once client is done sending HTTP request, server receives empty bytestring from client to let server know it's done
